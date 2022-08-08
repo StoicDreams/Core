@@ -1,6 +1,6 @@
-namespace StoicDreams.Core;
+namespace StoicDreams.Core.DataTypes;
 
-public class DataTypeTests : TestFramework
+public class TResultTests : TestFramework
 {
 	[Theory]
 	[InlineData(234)]
