@@ -8,8 +8,6 @@ trigger:
 
   - job: Core
     displayName: 'Build and Publish Stoic Dreams Core'
-    dependsOn:
-    - Core
     pool:
       vmImage: 'windows-latest'
     variables:
