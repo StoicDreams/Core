@@ -30,17 +30,13 @@ stages:
         displayName: 'Restore nuget packages'
         inputs:
           command: 'restore'
-          projects: |
-            **/*.Core.csproj
-            **/*.BuildTests.csproj
+          projects: '**/*.sln'
           includeNuGetOrg: true
       - task: DotNetCoreCLI@2
         displayName: 'Build and pack the project'
         inputs:
           command: 'build'
-          projects: |
-            **/*.Core.csproj
-            **/*.BuildTests.csproj
+          projects: '**/*.sln'
       - task: VisualStudioTestPlatformInstaller@1
       - task: DotNetCoreCLI@2
         displayName: 'Run Build Tests'
