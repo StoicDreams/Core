@@ -2,5 +2,6 @@
 
 public interface IApiRequest
 {
-	ValueTask<TResult<T>> Get<T>(string url, bool isCacheable = false);
+	ValueTask<TResult<TResponse>> GetAsync<TResponse>(string url, bool isCacheable = false);
+	ValueTask<TResult<TResponse>> PostJsonAsync<TResponse, TInput>(string url, TInput? postData = default);
 }
