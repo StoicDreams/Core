@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>Erik Gassler</Authors>
+		<Company>Stoic Dreams</Company>
+		<Product>Stoic Dreams Core Library</Product>
+		<Description>
+			Library for commonly shared types, classes, and constants shared across various Stoic Dreams libraries and frameworks.
+		</Description>
+		<Version>1.0.1</Version>
+		<Copyright>2022 Stoic Dreams</Copyright>
+		<PackageProjectUrl>https://www.stoicdreams.com</PackageProjectUrl>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<PackageIcon>ms-icon-310x310.png</PackageIcon>
+		<OutputPath>bin</OutputPath>
+		<OutputType>Library</OutputType>
+		<PackageReleaseNotes>Development Release</PackageReleaseNotes>
+		<PackageOutputPath>..\..\NugetPackages</PackageOutputPath>
+		<PackOnBuild>true</PackOnBuild>
+		<Platform>AnyCPU</Platform>
+		<PublishReadyToRun>True</PublishReadyToRun>
+		<IncludeSourceFilesProjectOutputGroup>True</IncludeSourceFilesProjectOutputGroup>
+		<PackageType>Dependency</PackageType>
+		<RootNamespace>StoicDreams.Core</RootNamespace>
+		<ApplicationIcon>favicon.ico</ApplicationIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/StoicDreams/BlazorUI</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Stoic Dreams;Core Components</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+	<None Include=".\ms-icon-310x310.png">
+		<Pack>True</Pack>
+		<PackagePath></PackagePath>
+	</None>
+	<None Include="..\Docs\LICENSE.txt">
+		<Pack>True</Pack>
+		<PackagePath></PackagePath>
+	</None>
+	<None Include="..\Docs\README.md">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+	</None>
+	<None Include="commands.json">
+		<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	</None>
+	</ItemGroup>
+</Project>
