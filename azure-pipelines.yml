@@ -6,6 +6,9 @@
 trigger:
 - main
 
+stages:
+- stage: Alpha
+  jobs:
   - job: Core
     displayName: 'Build and Publish Stoic Dreams Core'
     pool:
