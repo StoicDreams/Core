@@ -1,4 +1,5 @@
-# Stoic Dreams Blazor UI
+# Stoic Dreams Core
+
 ###### GitHub: [GitHub.com/StoicDreams/Core](https://github.com/StoicDreams/Core)
 ###### Nuget: [NuGet.org/packages/StoicDreams.Core](https://nuget.org/packages/StoicDreams.Core)
 ###### Demo & Docs: [blazorui.stoicdreams.com](https://blazorui.stoicdreams.com)

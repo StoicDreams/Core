@@ -45,7 +45,7 @@ if($version -ne $null) {
 	$rootpath = Get-Location
 	$rootpath = $rootpath.ToString().ToLower()
 	Write-Host Path: "Root Path Start: $rootpath"
-	while($rootpath.Contains('Core')) {
+	while($rootpath.Contains('core')) {
 		cd ..
 		$rootpath = Get-Location
 		$rootpath = $rootpath.ToString().ToLower()
