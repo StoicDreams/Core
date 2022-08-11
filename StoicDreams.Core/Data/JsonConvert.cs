@@ -6,23 +6,27 @@ namespace StoicDreams.Core.Data;
 
 public class JsonConvert : IJsonConvert
 {
-	public ValueTask<T> DeserializeAsync<T>(string json, Func<T> defaultIfMissing)
+	public T Deserialize<T>(string json, Func<T> defaultIfMissing)
 	{
 		try
 		{
-			return ValueTask.FromResult(JsonSerializer.Deserialize<T>(json, JsonOptionsCompact) ?? defaultIfMissing());
+			return JsonSerializer.Deserialize<T>(json, JsonOptionsCompact) ?? defaultIfMissing();
 		}
 		catch
 		{
-			return ValueTask.FromResult(defaultIfMissing());
+			return defaultIfMissing();
 		}
 	}
 
-	public ValueTask<string> SerializeAsync(object data, bool tabbed = false)
+	public string Serialize(object data, bool tabbed = false)
 	{
-		if (tabbed) { return ValueTask.FromResult(JsonSerializer.Serialize(data, JsonOptionsReadable)); }
-		return ValueTask.FromResult(JsonSerializer.Serialize(data, JsonOptionsCompact));
+		if (tabbed) { return JsonSerializer.Serialize(data, JsonOptionsReadable); }
+		return JsonSerializer.Serialize(data, JsonOptionsCompact);
 	}
+
+	public ValueTask<T> DeserializeAsync<T>(string json, Func<T> defaultIfMissing) => ValueTask.FromResult(Deserialize<T>(json, defaultIfMissing));
+
+	public ValueTask<string> SerializeAsync(object data, bool tabbed = false) => ValueTask.FromResult(Serialize(data, tabbed));
 
 	private JsonSerializerOptions JsonOptionsCompact => new()
 	{
