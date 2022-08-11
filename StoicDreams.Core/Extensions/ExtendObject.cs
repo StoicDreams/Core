@@ -49,6 +49,5 @@ public static class ExtendObject
 		return input.WebDecryptString(password).FromJson<TResult>() ?? new TResult();
 	}
 
-
 	private static IJsonConvert Json { get; } = new JsonConvert();
 }
