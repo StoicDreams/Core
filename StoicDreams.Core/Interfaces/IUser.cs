@@ -1,4 +1,4 @@
-﻿namespace StoicDreams.Core.Interfaces;
+﻿namespace StoicDreams.Core.Auth;
 
 public interface IUser
 {
