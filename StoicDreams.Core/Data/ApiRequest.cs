@@ -68,11 +68,6 @@ public class ApiRequest : IApiRequest
 			_ => TResultStatus.ServerError
 		};
 		string json = await response.Content.ReadAsStringAsync();
-		if (result.Status == TResultStatus.Success && result.Result == null)
-		{
-			result.Status = TResultStatus.Exception;
-			result.Message = "Incoming data did not match expected format.";
-		}
 		if (json is TResponse data)
 		{
 			result.Result = data;
@@ -80,6 +75,11 @@ public class ApiRequest : IApiRequest
 		else
 		{
 			result.Result = System.Text.Json.JsonSerializer.Deserialize<TResponse>(json);
+		}
+		if (result.Status == TResultStatus.Success && result.Result == null)
+		{
+			result.Status = TResultStatus.Exception;
+			result.Message = "Incoming data did not match expected format.";
 		}
 		return result;
 	}

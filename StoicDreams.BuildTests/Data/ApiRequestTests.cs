@@ -43,6 +43,7 @@ public class ApiRequestTests : TestFramework
 		actions.Assert(a =>
 		{
 			TResult<string> data = a.GetResult<TResult<string>>();
+			Assert.True(data.IsOkay);
 			Assert.NotNull(data.Result);
 			Assert.Equal("Some Text", data.Result);
 		});
