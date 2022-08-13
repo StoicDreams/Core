@@ -63,4 +63,10 @@ public interface IClientAuth
 	/// </summary>
 	/// <returns></returns>
 	ValueTask<TResult> LogOut();
+
+	/// <summary>
+	/// Processing to update password.
+	/// </summary>
+	/// <returns></returns>
+	ValueTask<TResult> UpdaetPassword();
 }

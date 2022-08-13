@@ -12,7 +12,7 @@
 		<Description>
 			Library for commonly shared types, classes, and constants shared across various Stoic Dreams libraries and frameworks.
 		</Description>
-		<Version>1.0.130</Version>
+		<Version>1.0.131</Version>
 		<Copyright>2022 Stoic Dreams</Copyright>
 		<PackageProjectUrl>https://www.stoicdreams.com</PackageProjectUrl>
 		<PackageLicenseExpression></PackageLicenseExpression>
