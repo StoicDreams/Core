@@ -1,4 +1,5 @@
 ﻿using RichardSzalay.MockHttp;
+using System.Text.Json.Serialization;
 
 namespace StoicDreams.Core.Data;
 
@@ -7,7 +8,7 @@ public class ApiRequestTests : TestFramework
 	[Fact]
 	public async void Verify_Get_ApiResponse()
 	{
-		string response = await Json.SerializeAsync(new ApiResponse() { Data = "Hello World"});
+		string response = await Json.SerializeAsync(new ApiResponse() { Result = ResponseResult.Success, Data = "Hello World"});
 		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
 		{
 			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
@@ -29,7 +30,7 @@ public class ApiRequestTests : TestFramework
 	[Fact]
 	public async void Verify_Get_ApiResponse_with_MockData()
 	{
-		string response = await Json.SerializeAsync(new ApiResponse() { Data = new MockData() { Id = 27, Name = "Blerp!" } });
+		string response = await Json.SerializeAsync(new ApiResponse() { Result = ResponseResult.Success, Data = new MockData() { Id = 27, Name = "Blerp!" } });
 		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
 		{
 			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
@@ -46,6 +47,53 @@ public class ApiRequestTests : TestFramework
 			Assert.NotNull(data.Result);
 			Assert.Equal(27, data.Result.Id);
 			Assert.Equal("Blerp!", data.Result.Name);
+		});
+	}
+
+	[Fact]
+	public void Verify_Get_ApiResponse_with_LoginInfo()
+	{
+		Guid guid = Guid.NewGuid();
+		string response = $"{{\"result\":1,\"data\":{{\"userID\":\"{guid}\",\"displayName\":\"Timmy\",\"email\":\"mockemail@myfi.ws\",\"createdDate\":\"2018-09-01T05:30:05.3181046Z\"}}}}";
+		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
+		{
+			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
+		});
+
+		actions.Act(async a =>
+		{
+			return await a.Service.GetAsync<LoginInfo>("https://myfi.ws/mockurl");
+		});
+
+		actions.Assert(a =>
+		{
+			TResult<LoginInfo> data = a.GetResult<TResult<LoginInfo>>();
+			Assert.NotNull(data.Result);
+			Assert.Equal("mockemail@myfi.ws", data.Result.Email);
+			Assert.Equal("Timmy", data.Result.DisplayName);
+			Assert.Equal(guid, data.Result.UserId);
+		});
+	}
+
+	[Fact]
+	public void Verify_Get_ApiResponse_with_Failed_LoginInfo()
+	{
+		string response = $"{{\"result\":0}}";
+		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
+		{
+			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
+		});
+
+		actions.Act(async a =>
+		{
+			return await a.Service.GetAsync<LoginInfo>("https://myfi.ws/mockurl");
+		});
+
+		actions.Assert(a =>
+		{
+			TResult<LoginInfo> data = a.GetResult<TResult<LoginInfo>>();
+			Assert.Null(data.Result);
+			Assert.False(data.IsOkay);
 		});
 	}
 
@@ -185,4 +233,23 @@ public class ApiRequestTests : TestFramework
 		public int Id { get; set; } = 86;
 		public string Name { get; set; } = "Default";
 	}
+
+	internal class LoginInfo
+	{
+		[JsonPropertyName("createdDate")]
+		public DateTime CreatedDate { get; set; }
+
+		[JsonPropertyName("displayName")]
+		public string DisplayName { get; set; } = "User";
+
+		[JsonPropertyName("email")]
+		public string Email { get; set; } = string.Empty;
+
+		[JsonPropertyName("roles")]
+		public int Roles { get; set; } = 1;
+
+		[JsonPropertyName("userID")]
+		public Guid UserId { get; set; }
+	}
+
 }

@@ -121,7 +121,7 @@ public class ApiRequest : IApiRequest
 		try
 		{
 			response = System.Text.Json.JsonSerializer.Deserialize<TResponse>(json);
-			return true;
+			return response != null;
 		}
 		catch
 		{
@@ -134,14 +134,27 @@ public class ApiRequest : IApiRequest
 		response = default;
 		try
 		{
-			ApiResponse<TResponse>? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse<TResponse>>(json);
-			if (apiResponse == null) { return false; }
-			if (apiResponse.Data is not TResponse) { return false; }
-			response = apiResponse;
-			return true;
+			{
+				ApiResponse<TResponse>? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse<TResponse>>(json);
+				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				{
+					response = apiResponse;
+					return true;
+				}
+			}
+			{
+				ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
+				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				{
+					response = apiResponse;
+					return true;
+				}
+			}
+			return false;
 		}
-		catch
+		catch (Exception ex)
 		{
+			string error = ex.Message;
 			return false;
 		}
 	}
