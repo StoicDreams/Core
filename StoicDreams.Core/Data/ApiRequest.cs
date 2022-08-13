@@ -97,17 +97,17 @@ public class ApiRequest : IApiRequest
 			_ => TResultStatus.ServerError
 		};
 		string json = await response.Content.ReadAsStringAsync();
-		if (json is TResponse data)
+		if (TryDeserializeApiResponse(json, out TResult<TResponse>? apiResponse) && apiResponse != null)
+		{
+			return apiResponse;
+		}
+		else if (json is TResponse data)
 		{
 			result.Result = data;
 		}
 		else if (TryDeserializeExpected(json, out TResponse? expectedResponse))
 		{
 			result.Result = expectedResponse;
-		}
-		else if (TryDeserializeApiResponse(json, out TResult<TResponse>? apiResponse) && apiResponse != null)
-		{
-			return apiResponse;
 		}
 		if (result.Status == TResultStatus.Success && result.Result == null)
 		{
@@ -136,8 +136,9 @@ public class ApiRequest : IApiRequest
 		response = default;
 		try
 		{
-			ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
+			ApiResponse<TResponse>? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse<TResponse>>(json);
 			if (apiResponse == null) { return false; }
+			if (apiResponse.Data is not TResponse) { return false; }
 			response = apiResponse;
 			return true;
 		}

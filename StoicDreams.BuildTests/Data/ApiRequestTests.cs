@@ -5,6 +5,51 @@ namespace StoicDreams.Core.Data;
 public class ApiRequestTests : TestFramework
 {
 	[Fact]
+	public async void Verify_Get_ApiResponse()
+	{
+		string response = await Json.SerializeAsync(new ApiResponse() { Data = "Hello World"});
+		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
+		{
+			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
+		});
+
+		actions.Act(async a =>
+		{
+			return await a.Service.GetAsync<string>("https://myfi.ws/mockurl");
+		});
+
+		actions.Assert(a =>
+		{
+			TResult<string> data = a.GetResult<TResult<string>>();
+			Assert.NotNull(data.Result);
+			Assert.Equal("Hello World", data.Result);
+		});
+	}
+
+	[Fact]
+	public async void Verify_Get_ApiResponse_with_MockData()
+	{
+		string response = await Json.SerializeAsync(new ApiResponse() { Data = new MockData() { Id = 27, Name = "Blerp!" } });
+		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
+		{
+			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
+		});
+
+		actions.Act(async a =>
+		{
+			return await a.Service.GetAsync<MockData>("https://myfi.ws/mockurl");
+		});
+
+		actions.Assert(a =>
+		{
+			TResult<MockData> data = a.GetResult<TResult<MockData>>();
+			Assert.NotNull(data.Result);
+			Assert.Equal(27, data.Result.Id);
+			Assert.Equal("Blerp!", data.Result.Name);
+		});
+	}
+
+	[Fact]
 	public async void Verify_Get()
 	{
 		string response = await Json.SerializeAsync(new MockData());

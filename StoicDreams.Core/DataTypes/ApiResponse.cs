@@ -12,3 +12,8 @@ public class ApiResponse
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public object? Debug { get; set; }
 }
+
+public class ApiResponse<TData> : ApiResponse
+{
+	public new TData? Data { get; set; } = default;
+}

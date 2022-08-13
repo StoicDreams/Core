@@ -63,4 +63,27 @@ public class TResult<T> : TResult
 		result.Result = data;
 		return result;
 	}
+
+	public static implicit operator TResult<T>(ApiResponse<T> response)
+	{
+		TResult<T> result = new()
+		{
+			Message = response.Error ?? string.Empty,
+			Status = response.Result switch
+			{
+				ResponseResult.Success => TResultStatus.Success,
+				ResponseResult.RedirectInfo => TResultStatus.Redirect,
+				ResponseResult.HardRedirect => TResultStatus.Redirect,
+				_ => TResultStatus.Exception
+			}
+		};
+		if (response.Data is not T data)
+		{
+			result.Status = TResultStatus.Exception;
+			if (result.Message == string.Empty) { result.Message = "An unexpected error occurred."; }
+			return result;
+		}
+		result.Result = data;
+		return result;
+	}
 }
