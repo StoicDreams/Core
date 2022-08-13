@@ -101,9 +101,13 @@ public class ApiRequest : IApiRequest
 		{
 			result.Result = data;
 		}
-		else
+		else if (TryDeserializeExpected(json, out TResponse? expectedResponse))
 		{
-			result.Result = System.Text.Json.JsonSerializer.Deserialize<TResponse>(json);
+			result.Result = expectedResponse;
+		}
+		else if (TryDeserializeApiResponse(json, out TResult<TResponse>? apiResponse) && apiResponse != null)
+		{
+			return apiResponse;
 		}
 		if (result.Status == TResultStatus.Success && result.Result == null)
 		{
@@ -111,6 +115,36 @@ public class ApiRequest : IApiRequest
 			result.Message = "Incoming data did not match expected format.";
 		}
 		return result;
+	}
+
+	private bool TryDeserializeExpected<TResponse>(string json, out TResponse? response)
+	{
+		response = default;
+		try
+		{
+			response = System.Text.Json.JsonSerializer.Deserialize<TResponse>(json);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	private bool TryDeserializeApiResponse<TResponse>(string json, out TResult<TResponse>? response)
+	{
+		response = default;
+		try
+		{
+			ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
+			if (apiResponse == null) { return false; }
+			response = apiResponse;
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
 	}
 
 	private static Dictionary<string, object> Cache { get; } = new();

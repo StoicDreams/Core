@@ -32,4 +32,20 @@ public class TResultTests : TestFramework
 			Assert.True(a.Service.IsOkay);
 		});
 	}
+
+	[Theory]
+	[MemberData(nameof(ApiResponseToTResultInput))]
+	public void Verify_ApiResponse_To_TResult<TData>(TResult<TData> expectedTranslation, ApiResponse response)
+	{
+		TResult<TData> defaultItem = new();
+		TResult<TData> translatedItem = response;
+		Assert.NotEqual(defaultItem, translatedItem);
+		Assert.Equal(expectedTranslation, translatedItem);
+	}
+
+	public static IEnumerable<object[]> ApiResponseToTResultInput()
+	{
+		yield return new object[] { new TResult<string>() { Status = TResultStatus.Success, Result = "Hello World" }, new ApiResponse() { Data = "Hello World", Result = ResponseResult.Success } };
+		yield return new object[] { new TResult<string>() { Status = TResultStatus.Exception, Message = "Hello World" }, new ApiResponse() { Error = "Hello World", Result = ResponseResult.Fail } };
+	}
 }

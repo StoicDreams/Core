@@ -9,12 +9,12 @@ public class TResult
 	public string Message { get; set; } = string.Empty;
 	public virtual bool IsOkay => Status == TResultStatus.Success;
 
-	public static TResult Exception(string message = "Exception") => new TResult() { Message = message, Status = TResultStatus.Exception };
-	public static TResult Info(string message = "Info") => new TResult() { Message = message, Status = TResultStatus.Info };
-	public static TResult Success(string message = "Success") => new TResult() { Message = message, Status = TResultStatus.Success };
-	public static TResult Redirect(string message = "Redirect") => new TResult() { Message = message, Status = TResultStatus.Redirect };
-	public static TResult ClientError(string message = "ClientError") => new TResult() { Message = message, Status = TResultStatus.ClientError };
-	public static TResult ServerError(string message = "ServerError") => new TResult() { Message = message, Status = TResultStatus.ServerError };
+	public static TResult Exception(string message = "Exception") => new() { Message = message, Status = TResultStatus.Exception };
+	public static TResult Info(string message = "Info") => new() { Message = message, Status = TResultStatus.Info };
+	public static TResult Success(string message = "Success") => new() { Message = message, Status = TResultStatus.Success };
+	public static TResult Redirect(string message = "Redirect") => new() { Message = message, Status = TResultStatus.Redirect };
+	public static TResult ClientError(string message = "ClientError") => new() { Message = message, Status = TResultStatus.ClientError };
+	public static TResult ServerError(string message = "ServerError") => new() { Message = message, Status = TResultStatus.ServerError };
 }
 
 public class TResult<T> : TResult
@@ -23,4 +23,44 @@ public class TResult<T> : TResult
 
 	[MemberNotNullWhen(true, "Result")]
 	public override bool IsOkay => base.IsOkay && Result != null;
+
+	public override string ToString()
+	{
+		return $"{IsOkay}_{StatusCode}_{Status}_{Result}{Message}";
+	}
+
+	public override bool Equals(object? obj)
+	{
+		if (obj == null) { return false; }
+		if (obj is not TResult<T> instance) { return false; }
+		return ToString() == instance.ToString();
+	}
+
+	public override int GetHashCode()
+	{
+		return ToString().GetHashCode();
+	}
+
+	public static implicit operator TResult<T>(ApiResponse response)
+	{
+		TResult<T> result = new()
+		{
+			Message = response.Error ?? string.Empty,
+			Status = response.Result switch
+			{
+				ResponseResult.Success => TResultStatus.Success,
+				ResponseResult.RedirectInfo => TResultStatus.Redirect,
+				ResponseResult.HardRedirect => TResultStatus.Redirect,
+				_ => TResultStatus.Exception
+			}
+		};
+		if (!(response.Data is T data))
+		{
+			result.Status = TResultStatus.Exception;
+			if (result.Message == string.Empty) { result.Message = "An unexpected error occurred."; }
+			return result;
+		}
+		result.Result = data;
+		return result;
+	}
 }
