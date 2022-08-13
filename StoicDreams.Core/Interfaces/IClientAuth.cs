@@ -68,5 +68,5 @@ public interface IClientAuth
 	/// Processing to update password.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask<TResult> UpdaetPassword();
+	ValueTask<TResult> UpdaetPassword(string password);
 }
