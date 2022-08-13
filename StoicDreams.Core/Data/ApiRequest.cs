@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace StoicDreams.Core.Data;
+﻿namespace StoicDreams.Core.Data;
 
 public class ApiRequest : IApiRequest
 {
