@@ -44,6 +44,10 @@ public enum AppStateDataTags
 	/// </summary>
 	ErrorPageDefaultMessage,
 	/// <summary>
+	/// Type for razor component to use for feedback dialog.
+	/// </summary>
+	FeedbackComponent,
+	/// <summary>
 	/// Bool value indicating when page loading or navigation is in progress.
 	/// Framework sets true when navigation has started and set false when page title has been set.
 	/// Developers should also update this state explicitly when loading page content.
