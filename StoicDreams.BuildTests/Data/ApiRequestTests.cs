@@ -28,6 +28,28 @@ public class ApiRequestTests : TestFramework
 	}
 
 	[Fact]
+	public async void Verify_Get_ApiResponse_As_TResult()
+	{
+		string response = await Json.SerializeAsync(new ApiResponse() { Result = ResponseResult.Success, Data = "Hello World" });
+		IActions<IApiRequest> actions = ArrangeApiTest(mock =>
+		{
+			mock.When(HttpMethod.Get, "https://myfi.ws/mockurl").Respond("application/mock", response);
+		});
+
+		actions.Act(async a =>
+		{
+			return await a.Service.GetAsync<string>("https://myfi.ws/mockurl") as TResult;
+		});
+
+		actions.Assert(a =>
+		{
+			TResult data = a.GetResult<TResult>();
+			Assert.NotNull(data.Message);
+			Assert.Equal("Hello World", data.Message);
+		});
+	}
+
+	[Fact]
 	public async void Verify_Get_ApiResponse_with_MockData()
 	{
 		string response = await Json.SerializeAsync(new ApiResponse() { Result = ResponseResult.Success, Data = new MockData() { Id = 27, Name = "Blerp!" } });

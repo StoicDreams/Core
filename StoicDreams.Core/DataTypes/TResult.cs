@@ -118,6 +118,10 @@ public class TResult<T> : TResult
 				_ => TResultStatus.Exception
 			}
 		};
+		if (response.Data is string message)
+		{
+			result.Message = message;
+		}
 		if (response.Data is not T data)
 		{
 			result.Status = TResultStatus.Exception;
