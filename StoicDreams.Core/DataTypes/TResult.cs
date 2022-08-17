@@ -9,12 +9,49 @@ public class TResult
 	public string Message { get; set; } = string.Empty;
 	public virtual bool IsOkay => Status == TResultStatus.Success;
 
+	public override string ToString()
+	{
+		return $"{IsOkay}_{StatusCode}_{Status}_{Message}";
+	}
+
+	public override bool Equals(object? obj)
+	{
+		if (obj == null) { return false; }
+		if (obj is not TResult instance) { return false; }
+		return ToString() == instance.ToString();
+	}
+
+	public override int GetHashCode()
+	{
+		return ToString().GetHashCode();
+	}
+
 	public static TResult Exception(string message = "Exception") => new() { Message = message, Status = TResultStatus.Exception };
 	public static TResult Info(string message = "Info") => new() { Message = message, Status = TResultStatus.Info };
 	public static TResult Success(string message = "Success") => new() { Message = message, Status = TResultStatus.Success };
 	public static TResult Redirect(string message = "Redirect") => new() { Message = message, Status = TResultStatus.Redirect };
 	public static TResult ClientError(string message = "ClientError") => new() { Message = message, Status = TResultStatus.ClientError };
 	public static TResult ServerError(string message = "ServerError") => new() { Message = message, Status = TResultStatus.ServerError };
+
+	public static implicit operator TResult(ApiResponse response)
+	{
+		TResult result = new()
+		{
+			Message = response.Error ?? string.Empty,
+			Status = response.Result switch
+			{
+				ResponseResult.Success => TResultStatus.Success,
+				ResponseResult.RedirectInfo => TResultStatus.Redirect,
+				ResponseResult.HardRedirect => TResultStatus.Redirect,
+				_ => TResultStatus.Exception
+			}
+		};
+		if (response.Data is string message)
+		{
+			result.Message = message;
+		}
+		return result;
+	}
 }
 
 public class TResult<T> : TResult
@@ -61,6 +98,10 @@ public class TResult<T> : TResult
 			return result;
 		}
 		result.Result = data;
+		if (data is string message)
+		{
+			result.Message = message;
+		}
 		return result;
 	}
 
