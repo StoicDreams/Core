@@ -48,7 +48,7 @@ public interface IClientAuth
 	/// <param name="email"></param>
 	/// <param name="password"></param>
 	/// <returns></returns>
-	ValueTask<TResult> SignIn(string email, string password);
+	ValueTask<TResult<string>> SignIn(string email, string password);
 
 	/// <summary>
 	/// Processing to handle signing up a new user.
@@ -56,17 +56,17 @@ public interface IClientAuth
 	/// <param name="email"></param>
 	/// <param name="displayName"></param>
 	/// <returns></returns>
-	ValueTask<TResult> SignUp(string email, string displayName);
+	ValueTask<TResult<string>> SignUp(string email, string displayName);
 
 	/// <summary>
 	/// Processing to sign out a currently logged in user.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask<TResult> LogOut();
+	ValueTask<TResult<string>> LogOut();
 
 	/// <summary>
 	/// Processing to update password.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask<TResult> UpdatePassword(string password, Guid? accountToken = null);
+	ValueTask<TResult<string>> UpdatePassword(string password, Guid? accountToken = null);
 }
