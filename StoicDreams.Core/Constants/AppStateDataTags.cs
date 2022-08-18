@@ -181,4 +181,9 @@ public enum AppStateDataTags
 	/// Trigger to use anytime User data or any other auth information is updated.
 	/// </summary>
 	UserAuthUpdate,
+	/// <summary>
+	/// bool flag - set true when using Stoic Dreams Accounts for user authentication.
+	/// Enabling true will enable disclaimers to be displayed in certain BUI components so user is aware they are using a Stoic Dreams Account for this website/app.
+	/// </summary>
+	UsesStoicDreamsAuth
 }
