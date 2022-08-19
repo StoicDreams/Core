@@ -3,6 +3,21 @@
 public interface IStateManager
 {
 	/// <summary>
+	/// Check if state manager currently contains the requested state.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	ValueTask<bool> ContainsState(string name);
+
+	/// <summary>
+	/// Try to get state based on requested key name and type.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	ValueTask<TResult<T>> TryGetState<T>(string name);
+
+	/// <summary>
 	/// Set data for the specified custom tag name.
 	/// Note: SetData does not fire event triggers.
 	/// Wrap SetData calles in ApplyChanges method or call TriggerChange after last SetData is called.

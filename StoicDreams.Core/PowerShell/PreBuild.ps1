@@ -22,7 +22,8 @@ function CheckIfAnyFilesUpdated {
 	$folder = Get-Location
 	Write-Host "Working Directory: $folder"
 	$file = "$folder\lastupdate.txt"
-
+	# check is not working consistently, bypassing until I have time to look into why it fails.
+	return $true;
 	if (Test-Path $file) {
 		try {
 			$lastupdate = Get-Content -Path $file
