@@ -122,4 +122,17 @@ public class ExtendStringTests : TestFramework
 
 		actions.Assert((string? result) => result.IsNotNull().Should().Be(expectedResult));
 	}
+
+	[Theory]
+	[InlineData(new string[0], "")]
+	[InlineData(new string[] { "a" }, "a")]
+	[InlineData(new string[] { "a", "b" }, "a\n\nb\n\n")]
+	public void Verify_ToStringArray(string[] expectedResult, string input)
+	{
+		IActions actions = ArrangeUnitTest(() => input);
+
+		actions.Act((string value) => value.ToStringArray());
+
+		actions.Assert((string[]? result) => result.IsNotNull().Should().Equal(expectedResult));
+	}
 }

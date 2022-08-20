@@ -256,4 +256,17 @@ public static class ExtendString
 		}
 		return result.ToString();
 	}
+
+	/// <summary>
+	/// Simple shorthand to split string with line delimited items into an array.
+	/// Created to use within a foreach context.
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="delimiter"></param>
+	/// <param name="options"></param>
+	/// <returns></returns>
+	public static string[] ToStringArray(this string input, char delimiter = '\n', StringSplitOptions options = StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+	{
+		return input.Split(delimiter, options);
+	}
 }
