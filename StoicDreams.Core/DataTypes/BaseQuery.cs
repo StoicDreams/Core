@@ -1,7 +1,10 @@
-﻿namespace StoicDreams.Core.DataTypes;
+﻿using System.Text.Json.Serialization;
+
+namespace StoicDreams.Core.DataTypes;
 
 public class BaseQuery
 {
+	[JsonIgnore]
 	/// <summary>
 	/// Primary filter applied by System, not set from users.
 	/// </summary>
@@ -20,16 +23,18 @@ public class BaseQuery
 	/// <summary>
 	/// Number of items per page.
 	/// </summary>
-	public int PerPage { get; set; } = 20;
+	public int PerPage { get; set; } = 10;
 
+	[JsonIgnore]
 	/// <summary>
 	/// Start of index for which to include items from result set.
 	/// </summary>
-	public int StartIndex => (Page - 1) * PerPage;
+	public int StartIndex => (Page > 0 ? Page - 1 : 0) * (PerPage > 0 ? PerPage : 10);
 
+	[JsonIgnore]
 	/// <summary>
 	/// End of index for which to include items from result set.
 	/// Last included index number is EndIndex - 1.
 	/// </summary>
-	public int EndIndex => StartIndex + PerPage;
+	public int EndIndex => StartIndex + (PerPage > 0 ? PerPage : 10);
 }
