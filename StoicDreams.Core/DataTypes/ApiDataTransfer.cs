@@ -3,7 +3,7 @@
 /// <summary>
 /// Class used to transfer data to and from storage.
 /// </summary>
-public class DataTransfer
+public class ApiDataTransfer
 {
 	/// <summary>
 	/// Depending on context, could be name of class type or category.
@@ -20,7 +20,7 @@ public class DataTransfer
 	public override bool Equals(object? obj)
 	{
 		if (obj is string text) { return text == ToString(); }
-		if (obj is DataTransfer data) { return data.ToString() == ToString(); }
+		if (obj is ApiDataTransfer data) { return data.ToString() == ToString(); }
 		return false;
 	}
 }
