@@ -269,4 +269,24 @@ public static class ExtendString
 	{
 		return input.Split(delimiter, options);
 	}
+
+	/// <summary>
+	/// Convert data from a query string (e.g., "name1=value1;name2=value2") into a Dictionary<string, string> object.
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="delimiter"></param>
+	/// <returns></returns>
+	public static Dictionary<string, string> ExtractDataFromQueryString(this string input, char delimiter = ';')
+	{
+		Dictionary<string, string> data = new();
+		if (string.IsNullOrWhiteSpace(input)) { return data; }
+		string[] segments = input.Split(delimiter, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		foreach (string segment in segments)
+		{
+			string[] keyValue = segment.Split('=', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+			if (keyValue.Length != 2) { continue; }
+			data[keyValue[0]] = keyValue[1];
+		}
+		return data;
+	}
 }

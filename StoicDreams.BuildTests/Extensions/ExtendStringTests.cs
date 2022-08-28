@@ -135,4 +135,28 @@ public class ExtendStringTests : TestFramework
 
 		actions.Assert((string[]? result) => result.IsNotNull().Should().Equal(expectedResult));
 	}
+
+	[Theory]
+	[InlineData("")]
+	[InlineData("a=123;b=345;c=987", "a", "123", "b", "345", "c", "987")]
+	public void Verify_ExtractDataFromQueryString(string queryString, params string[] keyValues)
+	{
+		if (keyValues.Length % 2 != 0) { throw new Exception("keyValues must be an even number, representing pairs of key|value to use against resulting data object."); }
+		IActions actions = ArrangeUnitTest(() => queryString);
+
+		actions.Act((string value) => value.ExtractDataFromQueryString());
+
+		actions.Assert((Dictionary<string, string>? result) =>
+		{
+			result.IsNotNull();
+			Assert.Equal(keyValues.Length, result.Keys.Count * 2);
+			for (int keyIndex = 0, valueIndex = 1; keyIndex < keyValues.Length - 1; keyIndex += 2, valueIndex += 2)
+			{
+				Assert.True(result.TryGetValue(keyValues[keyIndex], out string? dataValue));
+				Assert.Equal(keyValues[valueIndex], dataValue);
+			}
+		});
+	}
+
+
 }
