@@ -23,4 +23,9 @@ public class ApiDataTransfer
 		if (obj is ApiDataTransfer data) { return data.ToString() == ToString(); }
 		return false;
 	}
+
+	public static ApiDataTransfer Create(string dataType, string data) => new() { Data = data, DataType = dataType };
+	public static ApiDataTransfer Create<T>(string dataType, T data, string encryptionPassword)
+		where T : new()
+		=> new() { Data = data.ConvertToWebEncryptedString(encryptionPassword), DataType = dataType };
 }

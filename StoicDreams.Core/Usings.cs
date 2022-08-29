@@ -3,4 +3,5 @@ global using StoicDreams.Core.Constants;
 global using StoicDreams.Core.Data;
 global using StoicDreams.Core.DataTypes;
 global using StoicDreams.Core.Encoding;
+global using StoicDreams.Core.Extensions;
 global using System.Text;
