@@ -131,4 +131,10 @@ public class TResult<T> : TResult
 		result.Result = data;
 		return result;
 	}
+	public static new TResult<T> Exception(string message = "Exception") => new() { Message = message, Status = TResultStatus.Exception };
+	public static new TResult<T> Info(string message = "Info") => new() { Message = message, Status = TResultStatus.Info };
+	public static TResult<T> Success(T item, string message = "Success") => new() { Message = message, Status = TResultStatus.Success, Result = item };
+	public static new TResult<T> Redirect(string message = "Redirect") => new() { Message = message, Status = TResultStatus.Redirect };
+	public static new TResult<T> ClientError(string message = "ClientError") => new() { Message = message, Status = TResultStatus.ClientError };
+	public static new TResult<T> ServerError(string message = "ServerError") => new() { Message = message, Status = TResultStatus.ServerError };
 }
