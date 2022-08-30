@@ -1,4 +1,6 @@
-﻿namespace StoicDreams.Core.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StoicDreams.Core.Data;
 
 public class ApiRequest : IApiRequest
 {
@@ -38,6 +40,19 @@ public class ApiRequest : IApiRequest
 		return await SendAsync<TResponse>(request, headers);
 	}
 
+	public async ValueTask<TResult> PostJsonAsync<TInput>(string url, TInput? postData = default, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
+	{
+		string json = postData == null ? ""
+			: postData is string jsonInput ? jsonInput
+			: await JsonConvert.SerializeAsync(postData)
+			;
+		HttpRequestMessage request = new(HttpMethod.Post, url)
+		{
+			Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+		};
+		return await SendAsync(request, headers);
+	}
+
 	public async ValueTask<TResult<TResponse>> PutJsonAsync<TResponse, TInput>(string url, TInput? putData = default, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
 	{
 		string json = putData == null ? ""
@@ -51,9 +66,27 @@ public class ApiRequest : IApiRequest
 		return await SendAsync<TResponse>(request, headers);
 	}
 
+	public async ValueTask<TResult> PutJsonAsync<TInput>(string url, TInput? putData = default, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
+	{
+		string json = putData == null ? ""
+			: putData is string jsonInput ? jsonInput
+			: await JsonConvert.SerializeAsync(putData)
+			;
+		HttpRequestMessage request = new(HttpMethod.Put, url)
+		{
+			Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+		};
+		return await SendAsync(request, headers);
+	}
+
 	public async ValueTask<TResult<TResponse>> DeleteAsync<TResponse>(string url, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
 	{
 		return await SendAsync<TResponse>(new(HttpMethod.Delete, url), headers);
+	}
+
+	public async ValueTask<TResult> DeleteAsync(string url, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
+	{
+		return await SendAsync(new(HttpMethod.Delete, url), headers);
 	}
 
 	private async ValueTask<TResult<TResponse>> SendAsync<TResponse>(HttpRequestMessage request, IDictionary<string, string>? headers, CancellationToken cancellationToken = default)
@@ -64,6 +97,22 @@ public class ApiRequest : IApiRequest
 			AddHeaders(request, headers);
 			HttpResponseMessage response = await Client.SendAsync(request, cancellationToken);
 			return await ProcessResponse<TResponse>(response);
+		}
+		catch (Exception ex)
+		{
+			result.Message = ex.Message;
+		}
+		return result;
+	}
+
+	private async ValueTask<TResult> SendAsync(HttpRequestMessage request, IDictionary<string, string>? headers, CancellationToken cancellationToken = default)
+	{
+		TResult result = new();
+		try
+		{
+			AddHeaders(request, headers);
+			HttpResponseMessage response = await Client.SendAsync(request, cancellationToken);
+			return await ProcessResponse(response);
 		}
 		catch (Exception ex)
 		{
@@ -115,6 +164,27 @@ public class ApiRequest : IApiRequest
 		return result;
 	}
 
+	private async ValueTask<TResult> ProcessResponse(HttpResponseMessage response)
+	{
+		TResult result = new();
+		result.StatusCode = (int)response.StatusCode;
+		result.Status = result.StatusCode switch
+		{
+			< 100 => TResultStatus.Exception,
+			>= 100 and < 200 => TResultStatus.Info,
+			>= 200 and < 300 => TResultStatus.Success,
+			>= 300 and < 400 => TResultStatus.Redirect,
+			>= 400 and < 500 => TResultStatus.ClientError,
+			_ => TResultStatus.ServerError
+		};
+		string json = await response.Content.ReadAsStringAsync();
+		if (TryDeserializeApiResponse(json, out TResult? apiResponse) && apiResponse != null)
+		{
+			return apiResponse;
+		}
+		return result;
+	}
+
 	private bool TryDeserializeExpected<TResponse>(string json, out TResponse? response)
 	{
 		response = default;
@@ -129,7 +199,7 @@ public class ApiRequest : IApiRequest
 		}
 	}
 
-	private bool TryDeserializeApiResponse<TResponse>(string json, out TResult<TResponse>? response)
+	private bool TryDeserializeApiResponse<TResponse>(string json, [NotNullWhen(true)] out TResult<TResponse>? response)
 	{
 		response = default;
 		try
@@ -142,6 +212,28 @@ public class ApiRequest : IApiRequest
 					return true;
 				}
 			}
+			{
+				ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
+				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				{
+					response = apiResponse;
+					return true;
+				}
+			}
+			return false;
+		}
+		catch (Exception ex)
+		{
+			string error = ex.Message;
+			return false;
+		}
+	}
+
+	private bool TryDeserializeApiResponse(string json, [NotNullWhen(true)] out TResult? response)
+	{
+		response = default;
+		try
+		{
 			{
 				ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
 				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
