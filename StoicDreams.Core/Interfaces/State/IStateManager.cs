@@ -43,7 +43,7 @@ public interface IStateManager
 	/// </summary>
 	/// <param name="subscriberId"></param>
 	/// <param name="changeHandler"></param>
-	void SubscribeToDataChanges(Guid subscriberId, Action<IDictionary<string, bool>> changeHandler);
+	void SubscribeToDataChanges(Guid subscriberId, Func<IDictionary<string, bool>, ValueTask> changeHandler);
 
 	/// <summary>
 	/// Unsubscribe from event trigger.
