@@ -11,6 +11,11 @@ public class ApiDataTransfer
 	public string DataType { get; set; } = string.Empty;
 
 	/// <summary>
+	/// Optional Group Identifier when transferring shared data.
+	/// </summary>
+	public Guid GroupId { get; set; } = Guid.Empty;
+
+	/// <summary>
 	/// Raw data to store, encrypted and base64 encoded.
 	/// </summary>
 	public string Data { get; set; } = string.Empty;
@@ -24,8 +29,8 @@ public class ApiDataTransfer
 		return false;
 	}
 
-	public static ApiDataTransfer Create(string dataType, string data) => new() { Data = data, DataType = dataType };
-	public static ApiDataTransfer Create<T>(string dataType, T data, string encryptionPassword)
+	public static ApiDataTransfer Create(string dataType, string data, Guid? groupId = null) => new() { Data = data, DataType = dataType, GroupId = groupId ?? Guid.Empty };
+	public static ApiDataTransfer Create<T>(string dataType, T data, string encryptionPassword, Guid? groupId = null)
 		where T : new()
-		=> new() { Data = data.ConvertToWebEncryptedString(encryptionPassword), DataType = dataType };
+		=> new() { Data = data.ConvertToWebEncryptedString(encryptionPassword), DataType = dataType, GroupId = groupId ?? Guid.Empty };
 }
