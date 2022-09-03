@@ -13,6 +13,25 @@ public class ApiRequest : IApiRequest
 		JsonConvert = jsonConvert;
 	}
 
+	public async ValueTask<TResult> GetAsync(string url, bool isCacheable = false, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
+	{
+		if (isCacheable && Cache.TryGetValue(url, out object? value))
+		{
+			return new TResult()
+			{
+				Status = TResultStatus.Success,
+				StatusCode = 200,
+				Message = value?.ToString() ?? string.Empty
+			};
+		}
+		TResult result = await SendAsync(new(HttpMethod.Get, url), headers);
+		if (result.IsOkay && isCacheable)
+		{
+			Cache[url] = result.Message;
+		}
+		return result;
+	}
+
 	public async ValueTask<TResult<TResponse>> GetAsync<TResponse>(string url, bool isCacheable = false, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
 	{
 		if (isCacheable && Cache.TryGetValue(url, out object? value))
@@ -24,7 +43,12 @@ public class ApiRequest : IApiRequest
 				Result = (TResponse)value
 			};
 		}
-		return await SendAsync<TResponse>(new(HttpMethod.Get, url), headers);
+		TResult<TResponse> tResult = await SendAsync<TResponse>(new(HttpMethod.Get, url), headers);
+		if (tResult.IsOkay && isCacheable)
+		{
+			Cache[url] = tResult.Result;
+		}
+		return tResult;
 	}
 
 	public async ValueTask<TResult<TResponse>> PostJsonAsync<TResponse, TInput>(string url, TInput? postData = default, IDictionary<string, string>? headers = null, CancellationToken cancellationToken = default)
@@ -182,6 +206,7 @@ public class ApiRequest : IApiRequest
 		{
 			return apiResponse;
 		}
+		result.Message = json;
 		return result;
 	}
 
