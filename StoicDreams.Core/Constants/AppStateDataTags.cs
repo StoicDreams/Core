@@ -30,6 +30,10 @@ public enum AppStateDataTags
 	/// </summary>
 	BreadcrumbEnabled,
 	/// <summary>
+	/// Set with LinkInfo data to use for Continue Button displayed in Blazor UI
+	/// </summary>
+	ContinueButton,
+	/// <summary>
 	/// String of current page path (e.g. "/home").
 	/// Excludes any query data
 	/// </summary>

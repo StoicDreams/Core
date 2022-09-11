@@ -18,3 +18,4 @@ temp
 *.local.*
 *.pubxml
 desktop.ini
+*.DS_Store
