@@ -215,8 +215,9 @@ public class ApiRequest : IApiRequest
 		response = default;
 		try
 		{
-			response = System.Text.Json.JsonSerializer.Deserialize<TResponse>(json);
-			return response != null;
+			TResult<TResponse> tResult = JsonConvert.Deserialize<TResponse>(json);
+			response = tResult.Result;
+			return tResult.IsOkay;
 		}
 		catch
 		{
@@ -230,16 +231,18 @@ public class ApiRequest : IApiRequest
 		try
 		{
 			{
-				ApiResponse<TResponse>? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse<TResponse>>(json);
-				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				TResult<ApiResponse<TResponse>> tResult = JsonConvert.Deserialize<ApiResponse<TResponse>>(json);
+				ApiResponse<TResponse>? apiResponse = tResult.Result;
+				if (tResult.IsOkay && apiResponse != null && apiResponse.Result != ResponseResult.Default)
 				{
 					response = apiResponse;
 					return true;
 				}
 			}
 			{
-				ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
-				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				TResult<ApiResponse> tResult = JsonConvert.Deserialize<ApiResponse>(json);
+				ApiResponse? apiResponse = tResult.Result;
+				if (tResult.IsOkay && apiResponse != null && apiResponse.Result != ResponseResult.Default)
 				{
 					response = apiResponse;
 					return true;
@@ -260,8 +263,9 @@ public class ApiRequest : IApiRequest
 		try
 		{
 			{
-				ApiResponse? apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(json);
-				if (apiResponse != null && apiResponse.Result != ResponseResult.Default)
+				TResult<ApiResponse> tResult = JsonConvert.Deserialize<ApiResponse>(json);
+				ApiResponse? apiResponse = tResult.Result;
+				if (tResult.IsOkay && apiResponse != null && apiResponse.Result != ResponseResult.Default)
 				{
 					response = apiResponse;
 					return true;
