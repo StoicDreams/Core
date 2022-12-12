@@ -18,7 +18,7 @@ stages:
     steps:
       - task: NuGetToolInstaller@1
         inputs:
-          versionSpec: '7.x'
+          versionSpec: '6.x'
           checkLatest: true
       - task: UseDotNet@2
         displayName: 'Load the SDK'
