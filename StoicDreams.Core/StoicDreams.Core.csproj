@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -12,7 +12,7 @@
 		<Description>
 			Library for commonly shared types, classes, and constants shared across various Stoic Dreams libraries and frameworks.
 		</Description>
-		<Version>1.1.9</Version>
+		<Version>1.1.14</Version>
 		<Copyright>2022 Stoic Dreams</Copyright>
 		<PackageProjectUrl>https://www.stoicdreams.com</PackageProjectUrl>
 		<PackageLicenseExpression></PackageLicenseExpression>
@@ -54,7 +54,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 	</ItemGroup>
 </Project>
