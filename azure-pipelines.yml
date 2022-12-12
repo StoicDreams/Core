@@ -18,13 +18,13 @@ stages:
     steps:
       - task: NuGetToolInstaller@1
         inputs:
-          versionSpec: '6.x'
+          versionSpec: '7.x'
           checkLatest: true
       - task: UseDotNet@2
         displayName: 'Load the SDK'
         inputs:
           packageType: 'sdk'
-          version: '6.x'
+          version: '7.x'
           includePreviewVersions: false
       - task: DotNetCoreCLI@2
         displayName: 'Restore nuget packages'
