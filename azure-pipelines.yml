@@ -11,8 +11,8 @@ stages:
   jobs:
   - job: Core
     displayName: 'Build and Publish Stoic Dreams Core'
-    pool:
-      vmImage: 'windows-latest'
+    pool: Default
+    #  vmImage: 'windows-latest'
     variables:
       buildConfiguration: 'Release'
     steps:
@@ -55,13 +55,13 @@ stages:
         inputs:
           codeCoverageTool: "Cobertura"
           summaryFileLocation: "$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml"
-      - task: Bash@3
+      - task: PowerShell@2
         displayName: 'Push package to nuget store'
         inputs:
           targetType: inline
           script: dotnet nuget push --api-key $(NugetApiKey) --skip-duplicate --source $(NugetSource) '$(Agent.BuildDirectory)\NugetPackages\StoicDreams.Core.*.nupkg' > nugetpush.txt; echo $(cat nugetpush.txt)
-      - task: Bash@3
+      - task: PowerShell@2
         displayName: 'Echo version number.'
         inputs:
           targetType: inline
-          script: pushResult=$(cat nugetpush.txt); re=".*StoicDreams\.Core\.([0-9\.]+)\.nupkg.*";if [[ $pushResult =~ $re ]]; then echo ${BASH_REMATCH[1]}; fi
+          script: (cat nugetpush.txt | Out-String) -match ".*StoicDreams\.Core\.(?<version>[0-9\.]+)\.nupkg.*" | Out-Null ; Write-Host $Matches.version;
