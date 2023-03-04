@@ -6,30 +6,28 @@ public class TResultTests : TestFramework
 	[InlineData(234)]
 	public void Verify_TResult<T>(T expectedResult)
 	{
-		IActions<TResult<T>> actions = ArrangeTest<TResult<T>>(options =>
+		IActions actions = ArrangeUnitTest(new TResult<T>());
+
+		actions.Act<TResult<T>>(a =>
 		{
-			TResult<T> result = new();
-			options.AddService(() => result);
+			a.Result = expectedResult;
+			return a;
 		});
 
-		actions.Act(a =>
+		actions.Assert<TResult<T>>(a =>
 		{
-			a.Service.Result = expectedResult;
+			Assert.False(a.IsOkay);
 		});
 
-		actions.Assert(a =>
+		actions.Act<TResult<T>>(a =>
 		{
-			Assert.False(a.Service.IsOkay);
+			a.Status = TResultStatus.Success;
+			return a;
 		});
 
-		actions.Act(a =>
+		actions.Assert<TResult<T>>(a =>
 		{
-			a.Service.Status = TResultStatus.Success;
-		});
-
-		actions.Assert(a =>
-		{
-			Assert.True(a.Service.IsOkay);
+			Assert.True(a.IsOkay);
 		});
 	}
 

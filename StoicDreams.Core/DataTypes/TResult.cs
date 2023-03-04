@@ -2,12 +2,19 @@
 
 namespace StoicDreams.Core.DataTypes;
 
-public class TResult
+public struct TResult
 {
+	public TResult()
+	{
+
+	}
+
+	internal object? Result { get; set; }
+	internal bool ExpectResult { get; set; }
 	public TResultStatus Status { get; set; }
 	public int StatusCode { get; set; }
 	public string Message { get; set; } = string.Empty;
-	public virtual bool IsOkay => Status == TResultStatus.Success;
+	public bool IsOkay => Status == TResultStatus.Success && (!ExpectResult | Result != null);
 
 	public override string ToString()
 	{
@@ -54,12 +61,19 @@ public class TResult
 	}
 }
 
-public class TResult<T> : TResult
+public struct TResult<T>
 {
-	public T? Result { get; set; }
+	public TResult()
+	{
 
+	}
+
+	public T? Result { get; set; }
+	public TResultStatus Status { get; set; }
+	public int StatusCode { get; set; }
+	public string Message { get; set; } = string.Empty;
 	[MemberNotNullWhen(true, "Result")]
-	public override bool IsOkay => base.IsOkay && Result != null;
+	public bool IsOkay => Status == TResultStatus.Success && Result != null;
 
 	public override string ToString()
 	{
@@ -76,6 +90,18 @@ public class TResult<T> : TResult
 	public override int GetHashCode()
 	{
 		return ToString().GetHashCode();
+	}
+
+	public static implicit operator TResult(TResult<T> input)
+	{
+		return new()
+		{
+			Result = input.Result,
+			ExpectResult = true,
+			Status = input.Status,
+			StatusCode = input.StatusCode,
+			Message = input.Message,
+		};
 	}
 
 	public static implicit operator TResult<T>(ApiResponse response)
@@ -131,10 +157,11 @@ public class TResult<T> : TResult
 		result.Result = data;
 		return result;
 	}
-	public static new TResult<T> Exception(string message = "Exception") => new() { Message = message, Status = TResultStatus.Exception };
-	public static new TResult<T> Info(string message = "Info") => new() { Message = message, Status = TResultStatus.Info };
+
+	public static TResult<T> Exception(string message = "Exception") => new() { Message = message, Status = TResultStatus.Exception };
+	public static TResult<T> Info(string message = "Info") => new() { Message = message, Status = TResultStatus.Info };
 	public static TResult<T> Success(T item, string message = "Success") => new() { Message = message, Status = TResultStatus.Success, Result = item };
-	public static new TResult<T> Redirect(string message = "Redirect") => new() { Message = message, Status = TResultStatus.Redirect };
-	public static new TResult<T> ClientError(string message = "ClientError") => new() { Message = message, Status = TResultStatus.ClientError };
-	public static new TResult<T> ServerError(string message = "ServerError") => new() { Message = message, Status = TResultStatus.ServerError };
+	public static TResult<T> Redirect(string message = "Redirect") => new() { Message = message, Status = TResultStatus.Redirect };
+	public static TResult<T> ClientError(string message = "ClientError") => new() { Message = message, Status = TResultStatus.ClientError };
+	public static TResult<T> ServerError(string message = "ServerError") => new() { Message = message, Status = TResultStatus.ServerError };
 }

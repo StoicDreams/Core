@@ -168,7 +168,7 @@ public class ApiRequest : IApiRequest
 			_ => TResultStatus.ServerError
 		};
 		string json = await response.Content.ReadAsStringAsync();
-		if (TryDeserializeApiResponse(json, out TResult<TResponse>? apiResponse) && apiResponse != null)
+		if (TryDeserializeApiResponse(json, out TResult<TResponse> apiResponse))
 		{
 			return apiResponse;
 		}
@@ -202,7 +202,7 @@ public class ApiRequest : IApiRequest
 			_ => TResultStatus.ServerError
 		};
 		string json = await response.Content.ReadAsStringAsync();
-		if (TryDeserializeApiResponse(json, out TResult? apiResponse) && apiResponse != null)
+		if (TryDeserializeApiResponse(json, out TResult apiResponse))
 		{
 			return apiResponse;
 		}
@@ -225,7 +225,7 @@ public class ApiRequest : IApiRequest
 		}
 	}
 
-	private bool TryDeserializeApiResponse<TResponse>(string json, [NotNullWhen(true)] out TResult<TResponse>? response)
+	private bool TryDeserializeApiResponse<TResponse>(string json, [NotNullWhen(true)] out TResult<TResponse> response)
 	{
 		response = default;
 		try
@@ -257,7 +257,7 @@ public class ApiRequest : IApiRequest
 		}
 	}
 
-	private bool TryDeserializeApiResponse(string json, [NotNullWhen(true)] out TResult? response)
+	private bool TryDeserializeApiResponse(string json, [NotNullWhen(true)] out TResult response)
 	{
 		response = default;
 		try

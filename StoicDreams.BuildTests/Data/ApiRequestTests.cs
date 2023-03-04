@@ -38,7 +38,7 @@ public class ApiRequestTests : TestFramework
 
 		actions.Act(async a =>
 		{
-			return await a.Service.GetAsync<string>("https://myfi.ws/mockurl") as TResult;
+			return (TResult)(await a.Service.GetAsync<string>("https://myfi.ws/mockurl"));
 		});
 
 		actions.Assert(a =>
