@@ -55,10 +55,13 @@ public class TResultTests : TestFramework
 	{
 		yield return new object[] { new TResult<string>() { Status = TResultStatus.Success, Result = "Hello World", Message = "Hello World" }, new ApiResponse() { Data = "Hello World", Result = ResponseResult.Success } };
 		yield return new object[] { new TResult<string>() { Status = TResultStatus.Exception, Message = "Hello World" }, new ApiResponse() { Error = "Hello World", Result = ResponseResult.Fail } };
+		yield return new object[] { new TResult<string>() { Status = TResultStatus.Success, Result = "Hello World", Message = "Hello World" }, new ApiResponse() { Data = "\"Hello World\"", Result = ResponseResult.Success } };
 	}
 
 	public static IEnumerable<object[]> ApiResponseToTResultInput()
 	{
 		yield return new object[] { new TResult() { Status = TResultStatus.Success, Message = "Hello World" }, new ApiResponse() { Data = "Hello World", Result = ResponseResult.Success } };
+		yield return new object[] { new TResult() { Status = TResultStatus.Exception, Message = "Hello World" }, new ApiResponse() { Error = "Hello World", Result = ResponseResult.Fail } };
+		yield return new object[] { new TResult() { Status = TResultStatus.Success, Message = "Hello World" }, new ApiResponse() { Data = "\"Hello World\"", Result = ResponseResult.Success } };
 	}
 }

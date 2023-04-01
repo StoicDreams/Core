@@ -55,7 +55,7 @@ public struct TResult
 		};
 		if (response.Data is string message)
 		{
-			result.Message = message;
+			result.Message = message.CleanMessage();
 		}
 		return result;
 	}
@@ -65,7 +65,6 @@ public struct TResult<T>
 {
 	public TResult()
 	{
-
 	}
 
 	public T? Result { get; set; }
@@ -126,7 +125,11 @@ public struct TResult<T>
 		result.Result = data;
 		if (data is string message)
 		{
-			result.Message = message;
+			result.Message = message.CleanMessage();
+			if (result.Message is T cleanedResult)
+			{
+				result.Result = cleanedResult;
+			}
 		}
 		return result;
 	}

@@ -13,7 +13,6 @@
 	},
 	"-vs-binding": {
 		"BeforeBuild": [
-			"PreBuildPS1"
 		],
 		"AfterBuild": [
 			"PostBuildPS1"

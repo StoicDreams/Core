@@ -5,6 +5,16 @@ namespace StoicDreams.Core.Extensions;
 
 public static class ExtendString
 {
+	public static string CleanMessage(this string message)
+	{
+		if (message == null) return string.Empty;
+		message = message.Trim();
+		if (message.Length < 2) return message;
+		if (message.First() == '"') { message = message[1..]; }
+		if (message.Last() == '"') { message = message[..^1]; }
+		return message;
+	}
+
 	/// <summary>
 	/// Return value with Asterix characters substituted for most of the characters.
 	/// Shorter text substitutes all characters but the first.
