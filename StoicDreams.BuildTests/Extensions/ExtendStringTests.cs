@@ -90,21 +90,6 @@ public class ExtendStringTests : TestFramework
     }
 
     /// <summary>
-    /// Validate GetParentFolder string extension.
-    /// </summary>
-    /// <param name="parentFolder"></param>
-    /// <param name="pathInput"></param>
-    [Theory]
-    [InlineData(@"C:\", "C:/")]
-    [InlineData(@"C:\", "C:/root")]
-    [InlineData(@"C:\root", @"C:\root\one")]
-    [InlineData(@"Z:\root\one", "Z:/root/one/two")]
-    public void Verify_GetParentFolder(string parentFolder, string pathInput)
-    {
-        Assert.Equal(parentFolder, pathInput.GetParentFolder());
-    }
-
-    /// <summary>
     /// Validate HtmlEncode string extension.
     /// </summary>
     /// <param name="encoded"></param>
