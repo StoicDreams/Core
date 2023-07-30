@@ -1,0 +1,40 @@
+name: Build and Publish Test Framework
+
+on:
+  push:
+    branches:
+    - main
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  BUILD_CONFIGURATION: 'Release'
+  NUGET_SOURCE: 'https://api.nuget.org/v3/index.json'
+  PROJECT_NAME: 'StoicDreams.Core'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Get Location
+      run: pwd
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIGURATION }}
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --configuration ${{ env.BUILD_CONFIGURATION }}
+    - name: View Files
+      run: ls -R
+    - name: Pack Test Framework
+      run: dotnet pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj --no-build --no-restore --configuration ${{ env.BUILD_CONFIGURATION }} --output NugetPackages
+    - name: View Files
+      run: ls -R
+    - name: Push Test Framework package to nuget store
+      run: dotnet nuget push --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate --source ${{ env.NUGET_SOURCE}} '**/NugetPackages/${{ env.PROJECT_NAME }}.*.nupkg' > nugetpushtf.txt; echo $(cat nugetpushtf.txt)
+    - name: Echo version number
+      run: echo $(cat nugetpushtf.txt)
