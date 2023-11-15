@@ -25,7 +25,7 @@ stages:
         inputs:
           packageType: 'sdk'
           version: '8.x'
-          includePreviewVersions: false
+          includePreviewVersions: true
       - task: DotNetCoreCLI@2
         displayName: 'Restore nuget packages'
         inputs:
