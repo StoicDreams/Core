@@ -16,11 +16,6 @@ stages:
     variables:
       buildConfiguration: 'Release'
     steps:
-      - task: PowerShell@2
-        displayName: 'Install .NET 8 SDK'
-        inputs:
-          targetType: inline
-          script: winget install Microsoft.DotNet.SDK.8
       - task: NuGetToolInstaller@1
         inputs:
           versionSpec: '6.x'
