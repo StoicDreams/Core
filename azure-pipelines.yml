@@ -16,6 +16,11 @@ stages:
     variables:
       buildConfiguration: 'Release'
     steps:
+      - task: PowerShell@2
+        displayName: 'Install .NET 8 SDK'
+        inputs:
+          targetType: inline
+          script: winget install Microsoft.DotNet.SDK.8
       - task: NuGetToolInstaller@1
         inputs:
           versionSpec: '6.x'
@@ -25,7 +30,7 @@ stages:
         inputs:
           packageType: 'sdk'
           version: '8.x'
-          includePreviewVersions: true
+          includePreviewVersions: false
       - task: DotNetCoreCLI@2
         displayName: 'Restore nuget packages'
         inputs:
