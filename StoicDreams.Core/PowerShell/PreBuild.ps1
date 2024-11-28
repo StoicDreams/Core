@@ -1,5 +1,7 @@
 # This pre-build process will update the current version number within this solution.
 
+$start_loc = Get-Location;
+Set-Location $PSScriptRoot;
 $rgxTargetGetVersion = '<Version>([0-9]+)\.([0-9]+)\.([0-9]+)</Version>'
 Clear-Host;
 
@@ -12,6 +14,7 @@ if (!(Test-Path './PowerShell')) {
 }
 
 if (!(Test-Path './StoicDreams.Core.csproj')) {
+	Set-Location $start_loc;
 	throw "This script is expected to be run from the root of the StoicDreams.Core project."
 }
 
@@ -127,3 +130,5 @@ if ($version -ne $null) {
 		UpdateProjectVersion $_.FullName $version
 	}
 }
+
+Set-Location $start_loc;

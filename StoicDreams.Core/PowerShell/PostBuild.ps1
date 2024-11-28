@@ -1,5 +1,7 @@
 # This post build process will update any local projects that include a reference to this StoicDreams.Core nuget package.
 
+$start_loc = Get-Location;
+Set-Location $PSScriptRoot;
 $rgxTargetGetVersion = '<Version>(.+)</Version>'
 $rgxTargetXML = '<PackageReference Include="StoicDreams.Core" Version="([0-9\.]+)" />'
 Clear-Host;
@@ -13,6 +15,7 @@ if (!(Test-Path './PowerShell')) {
 }
 
 if (!(Test-Path './StoicDreams.Core.csproj')) {
+	Set-Location $start_loc;
 	throw "This script is expected to be run from the root of the StoicDreams.Core project."
 }
 
@@ -74,3 +77,5 @@ if ($version -ne $null) {
 else {
 	Write-Host Current version was not found -ForegroundColor Red
 }
+
+Set-Location $start_loc;
