@@ -58,7 +58,7 @@ public enum AppStateDataTags
 	/// </summary>
 	IsLoadingPage,
 	/// <summary>
-	/// Set with Func<DrawerClickState, ValueTask>
+	/// Set with Func<DrawerClickState, Task>
 	/// Defaults to null
 	/// </summary>
 	LeftDrawerOnClick,
@@ -105,7 +105,7 @@ public enum AppStateDataTags
 	/// </summary>
 	PrivacyPageContent,
 	/// <summary>
-	/// Set with Func<DrawerClickState, ValueTask>
+	/// Set with Func<DrawerClickState, Task>
 	/// Defaults to null
 	/// </summary>
 	RightDrawerOnClick,

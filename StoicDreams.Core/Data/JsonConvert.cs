@@ -32,11 +32,11 @@ public class JsonConvert : IJsonConvert
 		return JsonSerializer.Serialize(data, JsonOptionsCompact);
 	}
 
-	public ValueTask<TResult<T>> DeserializeAsync<T>(string json) => ValueTask.FromResult(Deserialize<T>(json));
+	public Task<TResult<T>> DeserializeAsync<T>(string json) => Task.FromResult(Deserialize<T>(json));
 
-	public ValueTask<T> DeserializeAsync<T>(string json, Func<T> defaultIfMissing) => ValueTask.FromResult(Deserialize<T>(json, defaultIfMissing));
+	public Task<T> DeserializeAsync<T>(string json, Func<T> defaultIfMissing) => Task.FromResult(Deserialize<T>(json, defaultIfMissing));
 
-	public ValueTask<string> SerializeAsync(object data, bool tabbed = false) => ValueTask.FromResult(Serialize(data, tabbed));
+	public Task<string> SerializeAsync(object data, bool tabbed = false) => Task.FromResult(Serialize(data, tabbed));
 
 	private JsonSerializerOptions JsonOptionsCompact => new()
 	{

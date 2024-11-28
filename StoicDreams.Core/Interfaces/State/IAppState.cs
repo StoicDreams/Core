@@ -31,5 +31,5 @@ public interface IAppState : IStateManager
 	/// </summary>
 	/// <param name="tags"></param>
 	/// <returns></returns>
-	ValueTask TriggerChangeAsync(params AppStateDataTags[] tags);
+	Task TriggerChangeAsync(params AppStateDataTags[] tags);
 }

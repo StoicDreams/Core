@@ -40,7 +40,7 @@ public interface IClientAuth
 	/// Process typically used during startup to check if the user is currently logged in from a previous session.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask CheckLoginFromCache();
+	Task CheckLoginFromCache();
 
 	/// <summary>
 	/// Processing to handle signing in an existing user.
@@ -48,7 +48,7 @@ public interface IClientAuth
 	/// <param name="email"></param>
 	/// <param name="password"></param>
 	/// <returns></returns>
-	ValueTask<TResult> SignIn(string email, string password);
+	Task<TResult> SignIn(string email, string password);
 
 	/// <summary>
 	/// Processing to handle signing up a new user.
@@ -56,17 +56,17 @@ public interface IClientAuth
 	/// <param name="email"></param>
 	/// <param name="displayName"></param>
 	/// <returns></returns>
-	ValueTask<TResult> SignUp(string email, string displayName);
+	Task<TResult> SignUp(string email, string displayName);
 
 	/// <summary>
 	/// Processing to sign out a currently logged in user.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask<TResult> LogOut();
+	Task<TResult> LogOut();
 
 	/// <summary>
 	/// Processing to update password.
 	/// </summary>
 	/// <returns></returns>
-	ValueTask<TResult> UpdatePassword(string password, Guid? accountToken = null);
+	Task<TResult> UpdatePassword(string password, Guid? accountToken = null);
 }

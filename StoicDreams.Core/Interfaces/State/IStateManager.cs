@@ -7,7 +7,7 @@ public interface IStateManager
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	ValueTask<bool> ContainsState(string name);
+	Task<bool> ContainsState(string name);
 
 	/// <summary>
 	/// Try to get state based on requested key name and type.
@@ -15,7 +15,7 @@ public interface IStateManager
 	/// <typeparam name="T"></typeparam>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	ValueTask<TResult<T>> TryGetState<T>(string name);
+	Task<TResult<T>> TryGetState<T>(string name);
 
 	/// <summary>
 	/// Set data for the specified custom tag name.
@@ -25,7 +25,7 @@ public interface IStateManager
 	/// <typeparam name="TData"></typeparam>
 	/// <param name="name"></param>
 	/// <param name="data"></param>
-	ValueTask SetDataAsync<TData>(string name, TData? data);
+	Task SetDataAsync<TData>(string name, TData? data);
 
 	/// <summary>
 	/// Get data for the specified custom tag name
@@ -33,7 +33,7 @@ public interface IStateManager
 	/// <typeparam name="TData"></typeparam>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	ValueTask<TData?> GetDataAsync<TData>(string name);
+	Task<TData?> GetDataAsync<TData>(string name);
 
 	/// <summary>
 	/// Subscribe to event trigger called when a state has changed.
@@ -43,7 +43,7 @@ public interface IStateManager
 	/// </summary>
 	/// <param name="subscriberId"></param>
 	/// <param name="changeHandler"></param>
-	void SubscribeToDataChanges(Guid subscriberId, Func<IDictionary<string, bool>, ValueTask> changeHandler);
+	void SubscribeToDataChanges(Guid subscriberId, Func<IDictionary<string, bool>, Task> changeHandler);
 
 	/// <summary>
 	/// Unsubscribe from event trigger.
@@ -56,12 +56,12 @@ public interface IStateManager
 	/// Trigger a change event to be called, assuring given key is included in change handler Dictionary.
 	/// </summary>
 	/// <param name="key"></param>
-	ValueTask TriggerChangeAsync(string? key = null);
+	Task TriggerChangeAsync(string? key = null);
 
 	/// <summary>
 	/// Use this method to group together multiple state changes and trigger event handlers when finished.
 	/// </summary>
 	/// <param name="changeHandler"></param>
 	/// <returns></returns>
-	ValueTask ApplyChangesAsync(Func<ValueTask> changeHandler);
+	Task ApplyChangesAsync(Func<Task> changeHandler);
 }
